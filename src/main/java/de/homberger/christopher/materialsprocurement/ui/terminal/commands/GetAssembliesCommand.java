@@ -1,6 +1,5 @@
 package de.homberger.christopher.materialsprocurement.ui.terminal.commands;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -23,15 +22,14 @@ public class GetAssembliesCommand extends Command<MaterialsProcurement> {
         super(Pattern.compile(CommandRegex.GET_ASSEMBLY));
     }
 
+    /**
+     * Creates a KeyValue Sorted TreeSet for sorted output
+     */
     public static SortedSet<Entry<Assembly, Integer>> CreateKeyValueSort() {
-        return new TreeSet<Entry<Assembly, Integer>>(
-            new Comparator<Entry<Assembly, Integer>>() {
-                @Override public int compare(Entry<Assembly, Integer> l, Entry<Assembly, Integer> r) {
-                    int k = r.getValue().compareTo(l.getValue());
-                    return k == 0 ? l.getKey().compareTo(r.getKey()) : k;
-                }
-            }
-        );
+        return new TreeSet<Entry<Assembly, Integer>>((Entry<Assembly, Integer> l, Entry<Assembly, Integer> r) -> {
+            int k = r.getValue().compareTo(l.getValue());
+            return k == 0 ? l.getKey().compareTo(r.getKey()) : k;
+        });
     }
 
     @Override
