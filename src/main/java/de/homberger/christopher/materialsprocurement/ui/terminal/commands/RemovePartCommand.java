@@ -46,7 +46,6 @@ public class RemovePartCommand extends Command<MaterialsProcurement> {
         }
         if (amount == 0) {
             assembly.getAssemblies().remove(pAssembly);
-            game.removeShadowRef(pAssembly);
         } else {
             assembly.getAssemblies().put(pAssembly, amount);
         }
