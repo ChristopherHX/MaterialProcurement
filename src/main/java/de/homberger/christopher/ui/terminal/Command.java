@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 /**
  * Command super class of all terminal commands
+ * @param T Type to control main logic of the console ui
  * @author Christopher Lukas Homberger
  * @version 0.9.2
  */
@@ -23,13 +24,13 @@ public abstract class Command<T> {
     /**
      * Try to match the Command and invokes it
      * @param line Terminal line input
-     * @param game Game Object to be passed to invoke
+     * @param app Object to be passed to invoke
      * @return true if it had mached and was invoked
      */
-    public boolean tryInvoke(String line, T game) {
+    public boolean tryInvoke(String line, T app) {
         Matcher match = pattern.matcher(line);
         if (match.matches()) {
-            invoke(match.toMatchResult(), game);
+            invoke(match.toMatchResult(), app);
             return true;
         }
         return false;
@@ -38,7 +39,7 @@ public abstract class Command<T> {
     /**
      * Invokes the Command
      * @param res Parsed Arguments
-     * @param game to change game state
+     * @param app to change app state
      */
-    public abstract void invoke(MatchResult res, T game);
+    public abstract void invoke(MatchResult res, T app);
 }

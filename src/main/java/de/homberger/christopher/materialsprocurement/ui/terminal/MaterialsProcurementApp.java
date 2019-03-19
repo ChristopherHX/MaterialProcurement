@@ -13,9 +13,15 @@ import de.homberger.christopher.materialsprocurement.ui.terminal.commands.Remove
 import de.homberger.christopher.ui.terminal.ConsoleApp;
 
 /**
- * 
+ * Entry point of the MaterialsProcurementApp
+ * @author Christopher Lukas Homberger
+ * @version 0.9.0
  */
 public final class MaterialsProcurementApp {
+
+    /**
+     * Prohibit object creation from outside
+     */
     private MaterialsProcurementApp() {
     }
 

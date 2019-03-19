@@ -1,6 +1,5 @@
 package de.homberger.christopher.materialsprocurement.ui.terminal.commands;
 
-import java.util.Map.Entry;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -11,43 +10,31 @@ import de.homberger.christopher.ui.terminal.Command;
 import edu.kit.informatik.Terminal;
 
 /**
- * AddAssemblyCommand
- * 
+ * RemovePartCommand
+ * @author Christopher Lukas Homberger
+ * @version 0.9.0
  */
 public class RemovePartCommand extends Command<MaterialsProcurement> {
+    /**
+     * Create this console command and compile regex
+     */
     public RemovePartCommand() {
         super(Pattern.compile(CommandRegex.REMOVE_PART));
     }
 
     @Override
-    public void invoke(MatchResult res, MaterialsProcurement game) {
+    public void invoke(MatchResult res, MaterialsProcurement procurement) {
         String name = res.group(1);
-        Assembly assembly = game.getAssembly(name);
-        if (assembly == null || assembly.getAssemblies().isEmpty()) {
+        Assembly assembly = procurement.getAssembly(name);
+        if (assembly == null || assembly.isComponent()) {
             Terminal.printError("BOM not exists");
             return;
         }
-        int amount = Integer.parseInt(res.group(2));
-        String pname = res.group(3);
-        Assembly pAssembly = null;
-        for (Entry<Assembly, Integer> entry : assembly.getAssemblies().entrySet()) {
-            if (entry.getKey().getName().equals(pname)) {
-                pAssembly = entry.getKey();
-                amount = entry.getValue() - amount;
-                if (amount < 0) {
-                    Terminal.printError("Cannot remove more elements than it contains");
-                }
-                break;
-            }
-        }
-        if (pAssembly == null) {
-            Terminal.printError("Not Found");
+        try {
+            assembly.addPart(res.group(3), Integer.parseInt(res.group(2)));
+        } catch (IllegalArgumentException e) {
+            Terminal.printError(e.getMessage());
             return;
-        }
-        if (amount == 0) {
-            assembly.getAssemblies().remove(pAssembly);
-        } else {
-            assembly.getAssemblies().put(pAssembly, amount);
         }
         Terminal.printLine("OK");
     }

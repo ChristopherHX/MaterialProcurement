@@ -14,18 +14,22 @@ import edu.kit.informatik.Terminal;
 
 /**
  * AddAssemblyCommand
- * 
+ * @author Christopher Lukas Homberger
+ * @version 0.9.0
  */
 public class GetComponentsCommand extends Command<MaterialsProcurement> {
+    /**
+     * Create this console command and compile regex
+     */
     public GetComponentsCommand() {
         super(Pattern.compile(CommandRegex.GET_COMPONENTS));
     }
 
     @Override
-    public void invoke(MatchResult res, MaterialsProcurement game) {
+    public void invoke(MatchResult res, MaterialsProcurement procurement) {
         String name = res.group(1);
-        Assembly assembly = game.getAssembly(name);
-        if (assembly == null || assembly.getAssemblies().isEmpty()) {
+        Assembly assembly = procurement.getAssembly(name);
+        if (assembly == null || assembly.isComponent()) {
             Terminal.printError("BOM not exists");
             return;
         }

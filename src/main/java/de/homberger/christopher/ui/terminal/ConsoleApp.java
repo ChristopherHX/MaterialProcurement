@@ -9,14 +9,18 @@ import de.homberger.christopher.ui.terminal.resources.Localisation;
 import edu.kit.informatik.Terminal;
 
 /**
- * Starts the Game with the Terminal UI
+ * Starts the Terminal UI
  * with its main loop
  * @author Christopher Lukas Homberger
  * @version 0.9.2
+ * @param T Type of shared app main logic shared across Commands
  */
 public final class ConsoleApp<T> {
     private final Collection<Command<T>> commands;
 
+    /**
+     * Creates an Console app with specfied commands
+     */
     public ConsoleApp(Collection<Command<T>> commands) {
         this.commands = commands;
     }

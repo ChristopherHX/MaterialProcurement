@@ -1,6 +1,5 @@
 package de.homberger.christopher.materialsprocurement.ui.terminal.commands;
 
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
@@ -13,27 +12,28 @@ import edu.kit.informatik.Terminal;
 
 /**
  * AddAssemblyCommand
- * 
+ * @author Christopher Lukas Homberger
+ * @version 0.9.0
  */
 public class PrintAssemblyCommand extends Command<MaterialsProcurement> {
+    /**
+     * Create this console command and compile regex
+     */
     public PrintAssemblyCommand() {
         super(Pattern.compile(CommandRegex.PRINT_ASSEMBLY));
     }
 
     @Override
-    public void invoke(MatchResult res, MaterialsProcurement game) {
+    public void invoke(MatchResult res, MaterialsProcurement procurement) {
         String name = res.group(1);
-        Assembly assembly = game.getAssembly(name);
-        if (assembly == null/*  || assembly.getAssemblies().isEmpty() not so strict*/) {
-            Terminal.printError("BOM not exists");
-            return;
-        }
-        Map<Assembly, Integer> assemblies = assembly.getAssemblies();
-        if (assemblies.isEmpty()) {
+        Assembly assembly = procurement.getAssembly(name);
+        if (assembly == null) {
+            Terminal.printError("Assembly / Component not exists");
+        } else if (assembly.isComponent()) {
             Terminal.printLine("COMPONENT");
         } else {
             StringBuilder builder = new StringBuilder();
-            for (Entry<Assembly, Integer> entry : assemblies.entrySet()) {
+            for (Entry<Assembly, Integer> entry : assembly.getAssemblies().entrySet()) {
                 if (builder.length() != 0) {
                     builder.append(";");
                 }
