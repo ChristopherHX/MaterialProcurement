@@ -31,7 +31,9 @@ public final class MaterialsProcurementApp {
      */
     public static void main(String[] args) {
         MaterialsProcurement materialsprocurement = new MaterialsProcurement();
-        ConsoleApp<MaterialsProcurement> app = new ConsoleApp<MaterialsProcurement>(Arrays.asList(new AddAssemblyCommand(), new RemoveAssemblyCommand(), new PrintAssemblyCommand(), new GetAssembliesCommand(), new GetComponentsCommand(), new AddPartCommand(), new RemovePartCommand()));
+        ConsoleApp<MaterialsProcurement> app = new ConsoleApp<MaterialsProcurement>(Arrays.asList(
+        new AddAssemblyCommand(), new RemoveAssemblyCommand(), new PrintAssemblyCommand(),
+        new GetAssembliesCommand(), new GetComponentsCommand(), new AddPartCommand(), new RemovePartCommand()));
         app.run(materialsprocurement);
     }
 }

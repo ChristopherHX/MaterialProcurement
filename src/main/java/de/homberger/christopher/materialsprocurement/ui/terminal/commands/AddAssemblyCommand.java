@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import de.homberger.christopher.materialsprocurement.main.Assembly;
 import de.homberger.christopher.materialsprocurement.main.MaterialsProcurement;
 import de.homberger.christopher.materialsprocurement.ui.terminal.CommandRegex;
+import de.homberger.christopher.materialsprocurement.ui.terminal.resources.Localisation;
 import de.homberger.christopher.ui.terminal.Command;
 import edu.kit.informatik.Terminal;
 
@@ -19,14 +20,14 @@ public class AddAssemblyCommand extends Command<MaterialsProcurement> {
     /**
      * Assembly unit scheme to iterate over the arguments
      */
-    private final Pattern ASSEMBLY_UNIT;
+    private final Pattern assemblyUnit;
 
     /**
      * Create this console command and compile regex
      */
     public AddAssemblyCommand() {
         super(Pattern.compile(CommandRegex.ADD_ASSEMBLY));
-        ASSEMBLY_UNIT = Pattern.compile(CommandRegex.ASSEMBLY_UNIT);
+        assemblyUnit = Pattern.compile(CommandRegex.ASSEMBLY_UNIT);
     }
 
     @Override
@@ -34,18 +35,23 @@ public class AddAssemblyCommand extends Command<MaterialsProcurement> {
         String name = res.group(1);
         Assembly assembly = procurement.getAssembly(name);
         if (assembly == null) {
+            // No referenced component found create a new one
             assembly = new Assembly(procurement, name);
         } else if (!assembly.isComponent()) {
-            Terminal.printError("BOM already exists");
+            Terminal.printError(Localisation.BAE);
             return;
         }
-        Matcher matcher = ASSEMBLY_UNIT.matcher(res.group(2));
+        Matcher matcher = assemblyUnit.matcher(res.group(2));
         try {
+            // Iterate over all child-assemblies
             while (matcher.find()) {
                 String name2 = matcher.group(2);
                 if (assembly.containsPart(name2)) {
-                    Terminal.printError("Duplicated Parameter");
+                    Terminal.printError(Localisation.DUPPARAM);
+                    // GC needs a hint to clean frequently
                     assembly.remove();
+                    assembly = null;
+                    System.gc();
                     return;
                 }
                 assembly.addPart(name2, Integer.parseInt(matcher.group(1)));
@@ -53,10 +59,13 @@ public class AddAssemblyCommand extends Command<MaterialsProcurement> {
         } catch (IllegalArgumentException e) {
             // Print Error and remove / revert the assembly to Component
             Terminal.printError(e.getMessage());
+            // GC needs a hint to clean frequently
             assembly.remove();
+            assembly = null;
+            System.gc();
             return;
         }
         procurement.addAssembly(assembly);
-        Terminal.printLine("OK");
+        Terminal.printLine(Localisation.OK);
     }
 }

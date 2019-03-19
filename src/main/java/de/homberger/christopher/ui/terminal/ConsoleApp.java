@@ -20,6 +20,7 @@ public final class ConsoleApp<T> {
 
     /**
      * Creates an Console app with specfied commands
+     * @param commands Collection of callable commands beyond integratet quit
      */
     public ConsoleApp(Collection<Command<T>> commands) {
         this.commands = commands;
@@ -28,7 +29,7 @@ public final class ConsoleApp<T> {
     /**
      * Starts the terminal user interface
      * and handles the Terminal input
-     * @param args The ignored arguments of this console application
+     * @param app instance of shared logic of the console application
      */
     public void run(T app) {
         // Compiles the quit regex to speed up matching

@@ -17,7 +17,8 @@ public class MaterialsProcurement {
      */
     private final Set<Assembly> assemblies = new HashSet<>();
     /**
-     * Recycle unused Components automatically via gc (weakref)
+     * Recycle unused Components automatically via gc (WeakHashMap) used as HashSet
+     * without non null values
      */
     private final Map<Assembly, Object> shadowassemblies = new WeakHashMap<>();
 
@@ -38,7 +39,7 @@ public class MaterialsProcurement {
      */
     public Assembly getAssembly(String name) {
         for (Assembly shadowassembly : shadowassemblies.keySet()) {
-            if(shadowassembly != null && shadowassembly.getName().equals(name)) {
+            if (shadowassembly != null && shadowassembly.getName().equals(name)) {
                 return shadowassembly;
             }
         }
@@ -47,21 +48,22 @@ public class MaterialsProcurement {
 
     /**
      * Removes an Assembly
+     * Call ! "System.gc()" --- GC needs a hint to clean frequently
      * @param assembly to remove from MaterialsProcurement and revert assembly to weakref Component
      */
-	public void removeAssembly(Assembly assembly) {
+    public void removeAssembly(Assembly assembly) {
         if (assembly.isComponent()) {
             assemblies.remove(assembly);
         } else {
             assembly.remove();
         }
-	}
+    }
 
     /**
      * Register Assembly as Component with a weakref, called from Assembly constructor
      * @param assembly Component to add
      */
-	public void registerComponent(Assembly assembly) {
+    public void registerComponent(Assembly assembly) {
         shadowassemblies.put(assembly, null);
-	}
+    }
 }

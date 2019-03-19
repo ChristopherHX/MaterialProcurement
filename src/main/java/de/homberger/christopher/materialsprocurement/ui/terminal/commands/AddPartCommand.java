@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import de.homberger.christopher.materialsprocurement.main.Assembly;
 import de.homberger.christopher.materialsprocurement.main.MaterialsProcurement;
 import de.homberger.christopher.materialsprocurement.ui.terminal.CommandRegex;
+import de.homberger.christopher.materialsprocurement.ui.terminal.resources.Localisation;
 import de.homberger.christopher.ui.terminal.Command;
 import edu.kit.informatik.Terminal;
 
@@ -27,7 +28,7 @@ public class AddPartCommand extends Command<MaterialsProcurement> {
         String name = res.group(1);
         Assembly assembly = procurement.getAssembly(name);
         if (assembly == null || assembly.isComponent()) {
-            Terminal.printError("BOM not exists");
+            Terminal.printLine(Localisation.BNE);
             return;
         }
         try {
@@ -36,6 +37,6 @@ public class AddPartCommand extends Command<MaterialsProcurement> {
             Terminal.printError(e.getMessage());
             return;
         }
-        Terminal.printLine("OK");
+        Terminal.printLine(Localisation.OK);
     }
 }
