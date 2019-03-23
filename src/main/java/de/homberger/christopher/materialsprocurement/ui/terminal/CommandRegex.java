@@ -17,16 +17,26 @@ public class CommandRegex {
     public static final String ASSEMBLY_AMOUNT = "(1000|[0-9]{1,3})";
 
     /**
+     * Symbol to seperate amount from name
+     */
+    public static final String ASSEMBLY_UNIT_SEPERRATOR = ":";
+
+    /**
      * Regex part with bundled amount and name
      */
-    public static final String ASSEMBLY_UNIT = ASSEMBLY_AMOUNT + ":" + ASSEMBLY_NAME;
+    public static final String ASSEMBLY_UNIT = ASSEMBLY_AMOUNT + ASSEMBLY_UNIT_SEPERRATOR + ASSEMBLY_NAME;
+
+    /**
+     * Symbol to seperate list of assembly units
+     */
+    public static final String ASSEMBLY_LIST_SEPERRATOR = ";";
 
 
     /**
      * Add Assembly command like spec
      */
     public static final String ADD_ASSEMBLY = "addAssembly " + ASSEMBLY_NAME
-    + "=(" + ASSEMBLY_UNIT + "(;" + ASSEMBLY_UNIT + ")*)";
+    + "=(" + ASSEMBLY_UNIT + "(" + ASSEMBLY_LIST_SEPERRATOR + ASSEMBLY_UNIT + ")*)";
   
     /**
      * Remove Assembly command like spec

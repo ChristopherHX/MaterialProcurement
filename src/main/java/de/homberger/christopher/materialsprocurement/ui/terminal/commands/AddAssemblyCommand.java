@@ -9,7 +9,6 @@ import de.homberger.christopher.materialsprocurement.main.MaterialsProcurement;
 import de.homberger.christopher.materialsprocurement.ui.terminal.CommandRegex;
 import de.homberger.christopher.materialsprocurement.ui.terminal.resources.Localisation;
 import de.homberger.christopher.ui.terminal.Command;
-import edu.kit.informatik.Terminal;
 
 /**
  * AddAssemblyCommand
@@ -38,34 +37,30 @@ public class AddAssemblyCommand extends Command<MaterialsProcurement> {
             // No referenced component found create a new one
             assembly = new Assembly(procurement, name);
         } else if (!assembly.isComponent()) {
-            Terminal.printError(Localisation.BAE);
+            System.err.println(Localisation.BAE);
             return;
         }
+        procurement.addAssembly(assembly);
         Matcher matcher = assemblyUnit.matcher(res.group(2));
         try {
             // Iterate over all child-assemblies
             while (matcher.find()) {
                 String name2 = matcher.group(2);
                 if (assembly.containsPart(name2)) {
-                    Terminal.printError(Localisation.DUPPARAM);
-                    // GC needs a hint to clean frequently
-                    assembly.remove();
+                    System.err.println(Localisation.DUPPARAM);
                     assembly = null;
-                    System.gc();
+                    procurement.removeAssembly(name);
                     return;
                 }
-                assembly.addPart(name2, Integer.parseInt(matcher.group(1)));
+                procurement.addPart(name, name2, Integer.parseInt(matcher.group(1)));
             }
         } catch (IllegalArgumentException e) {
             // Print Error and remove / revert the assembly to Component
-            Terminal.printError(e.getMessage());
-            // GC needs a hint to clean frequently
-            assembly.remove();
+            System.err.println(e.getMessage());
             assembly = null;
-            System.gc();
+            procurement.removeAssembly(name);
             return;
         }
-        procurement.addAssembly(assembly);
-        Terminal.printLine(Localisation.OK);
+        System.out.println(Localisation.OK);
     }
 }

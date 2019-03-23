@@ -8,7 +8,6 @@ import de.homberger.christopher.materialsprocurement.main.MaterialsProcurement;
 import de.homberger.christopher.materialsprocurement.ui.terminal.CommandRegex;
 import de.homberger.christopher.materialsprocurement.ui.terminal.resources.Localisation;
 import de.homberger.christopher.ui.terminal.Command;
-import edu.kit.informatik.Terminal;
 
 /**
  * AddAssemblyCommand
@@ -28,14 +27,12 @@ public class RemoveAssemblyCommand extends Command<MaterialsProcurement> {
         String name = res.group(1);
         Assembly assembly = procurement.getAssembly(name);
         if (assembly == null || assembly.isComponent()) {
-            Terminal.printError(Localisation.BNE);
+            System.err.println(Localisation.BNE);
             return;
         }
-        // GC needs a hint to clean frequently
-        assembly.remove();
         assembly = null;
-        System.gc();
-        Terminal.printLine(Localisation.OK);
+        procurement.removeAssembly(name);
+        System.out.println(Localisation.OK);
     }
 
 }

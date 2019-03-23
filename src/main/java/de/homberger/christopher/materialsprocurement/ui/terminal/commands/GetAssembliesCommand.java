@@ -11,8 +11,8 @@ import de.homberger.christopher.materialsprocurement.main.Assembly;
 import de.homberger.christopher.materialsprocurement.main.MaterialsProcurement;
 import de.homberger.christopher.materialsprocurement.ui.terminal.CommandRegex;
 import de.homberger.christopher.materialsprocurement.ui.terminal.resources.Localisation;
+import de.homberger.christopher.materialsprocurement.ui.terminal.util.KeyValueSort;
 import de.homberger.christopher.ui.terminal.Command;
-import edu.kit.informatik.Terminal;
 
 /**
  * AddAssemblyCommand
@@ -27,40 +27,30 @@ public class GetAssembliesCommand extends Command<MaterialsProcurement> {
         super(Pattern.compile(CommandRegex.GET_ASSEMBLY));
     }
 
-    /**
-     * Creates a KeyValue Sorted TreeSet for sorted output
-     */
-    public static SortedSet<Entry<Assembly, Integer>> CreateKeyValueSort() {
-        return new TreeSet<Entry<Assembly, Integer>>((Entry<Assembly, Integer> l, Entry<Assembly, Integer> r) -> {
-            int k = r.getValue().compareTo(l.getValue());
-            return k == 0 ? l.getKey().compareTo(r.getKey()) : k;
-        });
-    }
-
     @Override
     public void invoke(MatchResult res, MaterialsProcurement procurement) {
         String name = res.group(1);
         Assembly assembly = procurement.getAssembly(name);
         if (assembly == null || assembly.isComponent()) {
-            Terminal.printError(Localisation.BNE);
+            System.err.println(Localisation.BNE);
             return;
         }
         Map<Assembly, Integer> assemblies = assembly.getDeepAssemblies();
         if (assemblies.isEmpty()) {
-            Terminal.printLine("EMPTY");
+            System.out.println(Localisation.EMPTY);
         } else {
             StringBuilder builder = new StringBuilder();
-            SortedSet<Entry<Assembly, Integer>> sortedassemblies = CreateKeyValueSort();
+            SortedSet<Entry<Assembly, Integer>> sortedassemblies = new TreeSet<>(new KeyValueSort());
             sortedassemblies.addAll(assemblies.entrySet());
             for (Entry<Assembly, Integer> entry : sortedassemblies) {
                 if (builder.length() != 0) {
-                    builder.append(";");
+                    builder.append(CommandRegex.ASSEMBLY_LIST_SEPERRATOR);
                 }
                 builder.append(entry.getKey().getName());
-                builder.append(":");
+                builder.append(CommandRegex.ASSEMBLY_UNIT_SEPERRATOR);
                 builder.append(entry.getValue());
             }
-            Terminal.printLine(builder.toString());
+            System.out.println(builder.toString());
         }
     }
 }

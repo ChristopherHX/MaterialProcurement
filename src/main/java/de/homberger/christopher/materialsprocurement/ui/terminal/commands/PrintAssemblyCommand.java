@@ -9,7 +9,6 @@ import de.homberger.christopher.materialsprocurement.main.MaterialsProcurement;
 import de.homberger.christopher.materialsprocurement.ui.terminal.CommandRegex;
 import de.homberger.christopher.materialsprocurement.ui.terminal.resources.Localisation;
 import de.homberger.christopher.ui.terminal.Command;
-import edu.kit.informatik.Terminal;
 
 /**
  * AddAssemblyCommand
@@ -29,20 +28,20 @@ public class PrintAssemblyCommand extends Command<MaterialsProcurement> {
         String name = res.group(1);
         Assembly assembly = procurement.getAssembly(name);
         if (assembly == null) {
-            Terminal.printError(Localisation.NOE);
+            System.err.println(Localisation.NOE);
         } else if (assembly.isComponent()) {
-            Terminal.printLine(Localisation.COMPONENT);
+            System.out.println(Localisation.COMPONENT);
         } else {
             StringBuilder builder = new StringBuilder();
             for (Entry<Assembly, Integer> entry : assembly.getAssemblies().entrySet()) {
                 if (builder.length() != 0) {
-                    builder.append(";");
+                    builder.append(CommandRegex.ASSEMBLY_LIST_SEPERRATOR);
                 }
                 builder.append(entry.getKey().getName());
-                builder.append(":");
+                builder.append(CommandRegex.ASSEMBLY_UNIT_SEPERRATOR);
                 builder.append(entry.getValue());
             }
-            Terminal.printLine(builder.toString());
+            System.out.println(builder.toString());
         }
     }
 }

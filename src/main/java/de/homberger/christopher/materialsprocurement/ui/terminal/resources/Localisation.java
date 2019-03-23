@@ -37,5 +37,8 @@ public class Localisation {
      */
     public static final String NOE = "Assembly / Component not exists";
 
-
+    /**
+     * No sub Assemblies
+     */
+    public static final String EMPTY = "EMPTY";
 }

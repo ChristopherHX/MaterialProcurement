@@ -8,7 +8,6 @@ import de.homberger.christopher.materialsprocurement.main.MaterialsProcurement;
 import de.homberger.christopher.materialsprocurement.ui.terminal.CommandRegex;
 import de.homberger.christopher.materialsprocurement.ui.terminal.resources.Localisation;
 import de.homberger.christopher.ui.terminal.Command;
-import edu.kit.informatik.Terminal;
 
 /**
  * AddAssemblyCommand
@@ -28,15 +27,16 @@ public class AddPartCommand extends Command<MaterialsProcurement> {
         String name = res.group(1);
         Assembly assembly = procurement.getAssembly(name);
         if (assembly == null || assembly.isComponent()) {
-            Terminal.printLine(Localisation.BNE);
+            System.err.println(Localisation.BNE);
             return;
         }
+        assembly = null;
         try {
-            assembly.addPart(res.group(3), Integer.parseInt(res.group(2)));
+            procurement.addPart(name, res.group(3), Integer.parseInt(res.group(2)));
         } catch (IllegalArgumentException e) {
-            Terminal.printError(e.getMessage());
+            System.err.println(e.getMessage());
             return;
         }
-        Terminal.printLine(Localisation.OK);
+        System.out.println(Localisation.OK);
     }
 }

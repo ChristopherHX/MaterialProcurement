@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 /**
  * Assembly / Component sortable by name
  * @author Christopher Lukas Homberger
- * @version 0.9.2
+ * @version 0.9.4
  */
 public final class Assembly implements Comparable<Assembly> {
     /**
@@ -135,11 +135,10 @@ public final class Assembly implements Comparable<Assembly> {
     }
 
     /**
-     * Removes this Assembly from MaterialsProcurement and revert this instance to weakref Component
+     * Internal Removes all parts from this Assembly
      */
-    public void remove() {
+    protected void removeAllParts() {
         assemblies.clear();
-        procurement.removeAssembly(this);
     }
     
     /**
@@ -159,18 +158,20 @@ public final class Assembly implements Comparable<Assembly> {
     }
 
     /**
-     * Adds an Assembly new parts or remove them
+     * Internal Adds an Assembly new parts or remove them
+     * 
      * @param name Assembly / Component to add / remove
      * @param amount to add / remove
      * @throws IllegalArgumentException more objects was removed than exists
      */
-    public void addPart(String name, int amount) throws IllegalArgumentException {
-        // Have to copy parameter because of checkstyle
+    protected void addPart(String name, int amount) throws IllegalArgumentException {
+        // Have to copy parameter, because of checkstyle
         int camount = amount;
         Assembly pAssembly = null;
         Entry<Assembly, Integer> entry = getPart(name);
         if (entry != null) {
             pAssembly = entry.getKey();
+            // Add current amount to reflect total amount
             camount += entry.getValue();
         }
         if (camount < 0) {
@@ -185,18 +186,13 @@ public final class Assembly implements Comparable<Assembly> {
         }
         if (camount == 0) {
             assemblies.remove(pAssembly);
+            if (isComponent()) {
+                // Now its a component remove strong reference
+                procurement.removeAssembly(this.name);
+            }
         } else {
             assemblies.put(pAssembly, camount);
         }
-    }
-    
-    /**
-     * @param name Assembly / Component to remove / add
-     * @param amount to remove / add
-     * @throws IllegalArgumentException more objects was removed than exists
-     */
-    public void removePart(String name, int amount) throws IllegalArgumentException {
-        addPart(name, -amount);
     }
 
     @Override
